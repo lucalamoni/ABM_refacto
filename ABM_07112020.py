@@ -53,9 +53,9 @@ class songModel(object):
                     height=100, #height of our starting arena
                     i=8760, #number of iterations our model runs for [number of hours in 1 year]
                     mRuns=1, #The number of return migrations our model will carry out
-                    iSave=1, #how often to record data
-                    MGS=5, #Mating ground size 
-                    FGS=5, #Feeding ground size 
+                    iSave=500, #how often to record data
+                    MGS=0.2, #Mating ground size 
+                    FGS=0.2, #Feeding ground size 
                     FeedingGrounds=np.array([0,0]), #The coordinates of the feeding grounds 
                     migrationTrigger=1, #Migration trigger 
                     returnTrigger=4380, #Controls what iteration the agents return to the breeding grounds
@@ -373,7 +373,8 @@ class songModel(object):
                                 'song' : self.Agents[m].song,
                                 'matrix' : self.Agents[m].mat,
                                 #'singStates': self.Agents[m].singState,
-                                'CMscore':self.Agents[m].CMscore
+                                'CMscore':self.Agents[m].CMscore,
+                                'immigrants_id':self.immigrants_id
                                 #'noveltyValues': self.Agents[m].noveltyValues}
                                 }
 
@@ -389,7 +390,8 @@ class songModel(object):
                          'song' : self.Agents[m].song, 
                          'matrix' : self.Agents[m].mat, 
                          #'singStates': self.Agents[m].singState,
-                         'CMscore':self.Agents[m].CMscore
+                         'CMscore':self.Agents[m].CMscore,
+                         'immigrants_id':self.immigrants_id
                          #'noveltyValues': self.Agents[m].noveltyValues
                           }  
 
