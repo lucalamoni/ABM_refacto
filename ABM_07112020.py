@@ -769,13 +769,13 @@ class Agent(object):
             #if the row sum is different than 0
             if sum(self.Memory_Mat[z]) != 0:
                 #Normalisation of MSR
-                self.Memory_Mat_Norm[z] = self.Memory_Mat[z]/sum(self.Memory_Mat[z])
+                self.Memory_Mat[z] = self.Memory_Mat[z]/sum(self.Memory_Mat[z])
             else:
                 #otherwise it is equal to SR
-                self.Memory_Mat_Norm[z] = self.mat[z]
+                self.Memory_Mat[z] = self.mat[z]
 
         #Conformity mismatch calculation
-        self.CMscore = 1-(Change_Corr_Scale(corr2(self.mat, self.Memory_Mat_Norm))**2)   
+        self.CMscore = 1-(Change_Corr_Scale(corr2(self.mat, self.Memory_Mat))**2)   
 
     #Song learning
     def weightedGrammar(self,agentNumber,Agents,modelMode,CMscore,distMat,intensityMatrix): #noveltyScore is in reality noveltyScores
