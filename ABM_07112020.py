@@ -67,8 +67,8 @@ class songModel(object):
                     pL=np.array([0.8,0.1, 0.1]), #The probability of carrying out either an insertion (first element), deletion (second element), or substiution(third element)
                     modelMode='revolution', #The type of model we are running. 'distance' = distance, 'novelty' = distance + novelty, 
                                            #'weightedEditsD'= distance + weigh. edits, 'weightedEditsN' = distance + novelty +weigh, 'revolution' = distance + song memory
-                    memory_conservatism = 0.9,
-                    n_of_immigrants = 5
+                    memory_conservatism = 0.5,
+                    n_of_immigrants = 3
                     ): # filename
 
         ####    These are global variable which should NOT be changed    ####
@@ -228,24 +228,6 @@ class songModel(object):
                 # for a in self.Agents:
                 #     if a.name in self.immigrants_id and numMig == 1:
                 #         a.Change_Breed(1000,4000)
-                #         print(a.name)
-                #         print('changing_breeding')
-                    
-                #     #Here based on the agent's number, and the migration nummber, we switch its breeding ground
-                #     if a.name == 0 and numMig == 1:
-                #         a.Change_Breed(1000,4000)
-                #     if a.name == 1 and numMig == 1:
-                #         a.Change_Breed(1000,4000)                        
-                #     if a.name == 2 and numMig == 1:
-                #         a.Change_Breed(1000,4000)
-                    # if a.name == 3 and numMig == 1:
-                    #     a.Change_Breed(1000,4000)
-                    # if a.name == 4 and numMig == 1:
-                    #     a.Change_Breed(1000,4000)
-
-
-
-
                 #Movement Rules 
 
                 #loop through every agent     
@@ -270,27 +252,6 @@ class songModel(object):
                             # print('changing_feeding')
                         if a.name in self.immigrants_id and numMig == 1:
                             a.Change_Feed(-150,0)
-                        # if a.name == 0 and numMig == 0:
-                        #     a.Change_Feed(150,0)
-                        # if a.name == 1 and numMig == 0:
-                        #     a.Change_Feed(150,0)
-                        # if a.name == 2 and numMig == 0:
-                        #     a.Change_Feed(150,0)
-
-                        # # Added this to make the immigrant agents to go back to original feeding ground in the second migration
-
-                        # if a.name == 0 and numMig == 1:
-                        #     a.Change_Feed(-150,0)
-                        # if a.name == 1 and numMig == 1:
-                        #     a.Change_Feed(-150,0)
-                        # if a.name == 2 and numMig == 1:
-                        #     a.Change_Feed(-150,0)
-
-
-                        # if a.name == 3 and numMig == 0:
-                        #     a.Change_Feed(150,0)
-                        # if a.name == 4 and numMig == 0:
-                        #     a.Change_Feed(150,0)
                         
                         a.returnMigration(self.FGS)
                     
@@ -747,7 +708,7 @@ class Agent(object):
         self.matrixSampling(unitToStart)
      
     # Song memory function
-    def Matrix_Song_Memory(self,Agents,intensityMat):
+    def Matrix_Song_Memory(self,Agents,intensityMatrix):
         
         #here if the other agents are not singing, break the function
         for other in Agents:
@@ -755,12 +716,16 @@ class Agent(object):
                     return
             else:
                 #Otherwise, if the singer has an intFact bigger then 0.01
-                if other.name != self.name and intensityMat[self.name,other.name] > 0.01:
+                if other.name != self.name and intensityMatrix[self.name,other.name] > 0.01:
                     #estimate the singer SR and adjust it for the singer distance
-                    Other_pseudoMat = (hmmestimate(other.song,other.song))*intensityMat[self.name,other.name]
+                    # Other_pseudoMat = (hmmestimate(other.song,other.song))*intensityMat[self.name,other.name]
                     
-                    #Weighted average using c (memory conservatism)
-                    self.Memory_Mat = (self.memory_conservatism*self.Memory_Mat) + ((1-self.memory_conservatism)*Other_pseudoMat)
+                    # #Weighted average using c (memory conservatism)
+                    # self.Memory_Mat = (self.memory_conservatism*self.Memory_Mat) + ((1-self.memory_conservatism)*Other_pseudoMat)
+                    Other_pseudoMat = other.pseudoOut
+                    scalar = 1 - (intensityMatrix[self.name,other.name]*self.memory_conservatism)
+                    scalar2 = (intensityMatrix[self.name,other.name]*self.memory_conservatism)
+                    self.Memory_Mat = (self.Memory_Mat*(scalar) + Other_pseudoMat*scalar2)
         return self.Memory_Mat
         
     #Conformity Mismatch function
